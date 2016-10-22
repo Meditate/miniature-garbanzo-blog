@@ -3,25 +3,23 @@ package main
 import (
   "fmt"
   "net/http"
-  "strings"
   "log"
+  "html/template"
 )
 
-func sayhelloname(w http.ResponseWriter, r *http.Request) {
-  r.ParseForm()
-  fmt.Println(r.Form)
-  fmt.Println("path", r.URL.Path)
-  fmt.Println("scheme", r.URL.Scheme)
-  fmt.Println(r.Form["url_long"])
-  for k, v := range r.Form {
-    fmt.Println("key:", k)
-    fmt.Println("value:", strings.Join(v, ""))
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+  t, err := template.ParseFiles("templates/index.html")
+  if err != nil {
+    fmt.Println(w, err.Error())
   }
-  fmt.Fprintf(w, "Hello World")
+  t.ExecuteTemplate(w, "index", nil)
 }
 
 func main() {
-  http.HandleFunc("/", sayhelloname)
+  fmt.Println("Listen on port :3000")
+
+  http.HandleFunc("/", indexHandler)
+
   err := http.ListenAndServe(":3000", nil)
   if err != nil {
     log.Fatal("ListenAndServe: ", err)
