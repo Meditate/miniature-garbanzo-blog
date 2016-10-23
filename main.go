@@ -21,6 +21,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
   fmt.Println("Listen on port :3000")
 
+  http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
   http.HandleFunc("/", indexHandler)
 
   err := http.ListenAndServe(":3000", nil)
