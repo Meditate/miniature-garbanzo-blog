@@ -8,7 +8,10 @@ import (
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-  t, err := template.ParseFiles("templates/index.html")
+  t, err := template.ParseFiles(
+    "templates/index.html",
+    "templates/header.html",
+    "templates/footer.html")
   if err != nil {
     fmt.Println(w, err.Error())
   }
