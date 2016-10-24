@@ -37,7 +37,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func savePostHandler(w http.ResponseWriter, r *http.Request) {
-  id := r.FormValue("id")
+  id := GenerateId()
   title := r.FormValue("title")
   article := r.FormValue("article")
 
