@@ -22,6 +22,27 @@ func writeHandler(w http.ResponseWriter, r *http.Request) {
   t.ExecuteTemplate(w, "write", nil)
 }
 
+func editHandler(w http.ResponseWriter, r *http.Request) {
+  t, err := template.ParseFiles(
+    "templates/write.html",
+    "templates/header.html",
+    "templates/footer.html")
+  if err != nil {
+    fmt.Println(w, err.Error())
+  }
+
+  id := r.FormValue("id")
+
+  fmt.Println(id)
+  post, found := posts[id]
+
+  if !found {
+    http.NotFound(w, r)
+  }
+
+  t.ExecuteTemplate(w, "write", post)
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
   t, err := template.ParseFiles(
     "templates/index.html",
@@ -37,15 +58,22 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func savePostHandler(w http.ResponseWriter, r *http.Request) {
-  id := GenerateId()
-  title := r.FormValue("title")
-  article := r.FormValue("article")
+  id := r.FormValue("id")
+	title := r.FormValue("title")
+	article := r.FormValue("article")
 
-  post := models.NewPost(id, title, article)
-  posts[post.Id] = post
+	var post *models.Post
+	if id != "" {
+		post = posts[id]
+		post.Title = title
+		post.Article = article
+	} else {
+		id = GenerateId()
+		post := models.NewPost(id, title, article)
+		posts[post.Id] = post
+	}
 
-  http.Redirect(w, r, "/", 302)
-}
+	http.Redirect(w, r, "/", 302)}
 
 func main() {
   fmt.Println("Listen on port :3000")
@@ -54,6 +82,7 @@ func main() {
   http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
   http.HandleFunc("/", indexHandler)
   http.HandleFunc("/write", writeHandler)
+  http.HandleFunc("/edit", editHandler)
   http.HandleFunc("/SavePost", savePostHandler)
 
   err := http.ListenAndServe(":3000", nil)
