@@ -73,7 +73,18 @@ func savePostHandler(w http.ResponseWriter, r *http.Request) {
 		posts[post.Id] = post
 	}
 
-	http.Redirect(w, r, "/", 302)}
+	http.Redirect(w, r, "/", 302)
+}
+
+func destroyPostHandler(w http.ResponseWriter, r *http.Request) {
+  id := r.FormValue("id")
+
+  if id != "" {
+    delete(posts, id)
+  }
+
+  http.Redirect(w, r, "/", 302)
+}
 
 func main() {
   fmt.Println("Listen on port :3000")
@@ -83,6 +94,7 @@ func main() {
   http.HandleFunc("/", indexHandler)
   http.HandleFunc("/write", writeHandler)
   http.HandleFunc("/edit", editHandler)
+  http.HandleFunc("/destroy", destroyPostHandler)
   http.HandleFunc("/SavePost", savePostHandler)
 
   err := http.ListenAndServe(":3000", nil)
