@@ -7,6 +7,9 @@ import (
   "html/template"
 
   "github.com/meditate/miniature-garbanzo-blog/models"
+
+  "database/sql"
+  _ "github.com/lib/pq"
 )
 
 var posts map[string]*models.Post
@@ -88,6 +91,16 @@ func destroyPostHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
   fmt.Println("Listen on port :3000")
+
+  db, db_err := sql.Open("postgres", "user=pqgotest dbname=pqgotest sslmode=verify-full")
+  if db_err != nil {
+    log.Fatal(db_err)
+  }
+
+  rows, _ := db.Query("SELECT * FROM articles")
+  if rows != nil {
+    log.Fatal(rows)
+  }
 
   posts = make(map[string]*models.Post, 0)
   http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
