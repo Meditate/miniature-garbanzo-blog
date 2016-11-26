@@ -10,7 +10,7 @@ CREATE DATABASE garbanzo;
 
 -- CREATE USER TABLE
 
-CREATE TABLE "user" (
+CREATE TABLE "users" (
   id             SERIAL NOT NULL,
   name           VARCHAR(20) NOT NULL,
   surname        VARCHAR(20) NOT NULL,
@@ -22,6 +22,8 @@ CREATE TABLE "user" (
   PRIMARY KEY (id)
 );
 
+-- TODO create table posts
+
 CREATE OR REPLACE FUNCTION update_modified_column()
   RETURNS TRIGGER AS $$
   BEGIN
@@ -30,4 +32,4 @@ CREATE OR REPLACE FUNCTION update_modified_column()
   END
 $$ language 'plpgsql';
 
-CREATE TRIGGER user_updated_at_modify BEFORE UPDATE ON "user" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+CREATE TRIGGER user_updated_at_modify BEFORE UPDATE ON "users" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
