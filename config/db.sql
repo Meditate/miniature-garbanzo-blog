@@ -22,7 +22,17 @@ CREATE TABLE "users" (
   PRIMARY KEY (id)
 );
 
--- TODO create table posts
+CREATE TABLE "posts" (
+  id             SERIAL NOT NULL,
+  content        TEXT NOT NULL,
+  title          VARCHAR(80) NOT NULL,
+
+  created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id)
+);
+
 
 CREATE OR REPLACE FUNCTION update_modified_column()
   RETURNS TRIGGER AS $$
@@ -33,3 +43,4 @@ CREATE OR REPLACE FUNCTION update_modified_column()
 $$ language 'plpgsql';
 
 CREATE TRIGGER user_updated_at_modify BEFORE UPDATE ON "users" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+CREATE TRIGGER post_updated_at_modify BEFORE UPDATE ON "posts" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
