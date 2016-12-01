@@ -89,6 +89,18 @@ func destroyPostHandler(w http.ResponseWriter, r *http.Request) {
   http.Redirect(w, r, "/", 302)
 }
 
+func newSessionHandler(w http.ResponseWriter, r *http.Request) {
+  t, err := template.ParseFiles(
+    "templates/sessions/new.html",
+    "templates/header.html",
+    "templates/footer.html")
+  if err != nil {
+    fmt.Println(w, err.Error())
+  }
+
+  t.ExecuteTemplate(w, "sessions/new", nil)
+}
+
 func main() {
   fmt.Println("Listen on port :3000")
 
@@ -109,6 +121,7 @@ func main() {
   http.HandleFunc("/edit", editHandler)
   http.HandleFunc("/destroy", destroyPostHandler)
   http.HandleFunc("/SavePost", savePostHandler)
+  http.HandleFunc("/sessions/new", newSessionHandler)
 
   err := http.ListenAndServe(":3000", nil)
   if err != nil {
